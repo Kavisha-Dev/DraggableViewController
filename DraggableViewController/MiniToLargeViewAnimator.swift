@@ -10,30 +10,33 @@ import UIKit
 
 class MiniToLargeViewAnimator: BaseAnimator {
     
+    //MARK: - Properties
     var initialY: CGFloat = 0
     
+    
+    //MARK: - Lifecycle
     override func animatePresentingInContext(transitionContext: UIViewControllerContextTransitioning, fromVC: UIViewController, toVC: UIViewController) {
         
-        let fromRect = transitionContext.initialFrameForViewController(fromVC)
+        let fromRect = transitionContext.initialFrame(for: fromVC)
         var toRect = fromRect
         toRect.origin.y = toRect.size.height - initialY
         
         toVC.view.frame = toRect
-        let container = transitionContext.containerView()
+        let container = transitionContext.containerView
         let imageView = fakeMiniView()
         
         toVC.view.addSubview(imageView)
-        container?.addSubview(fromVC.view)
-        container?.addSubview(toVC.view)
+        container.addSubview(fromVC.view)
+        container.addSubview(toVC.view)
         
-        let animOptions: UIViewAnimationOptions = transitionContext.isInteractive() ? [UIViewAnimationOptions.CurveLinear] : []
+        let animOptions: UIViewAnimationOptions = transitionContext.isInteractive ? [UIViewAnimationOptions.curveLinear] : []
         
-        UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0, options: animOptions, animations: {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, options: animOptions, animations: {
             toVC.view.frame = fromRect
             imageView.alpha = 0
         }) { (finished) in
             imageView.removeFromSuperview()
-            if transitionContext.transitionWasCancelled() {
+            if transitionContext.transitionWasCancelled {
                 transitionContext.completeTransition(false)
             } else {
                 transitionContext.completeTransition(true)
@@ -41,27 +44,29 @@ class MiniToLargeViewAnimator: BaseAnimator {
         }
     }
     
-    override func animateDismissingInContext(transitionContext: UIViewControllerContextTransitioning, fromVC: UIViewController, toVC: UIViewController) {
+    override func animateDismissingInContext(transitionContext: UIViewControllerContextTransitioning,
+                                             fromVC: UIViewController,
+                                             toVC: UIViewController) {
         
-        var fromRect = transitionContext.initialFrameForViewController(fromVC)
+        var fromRect = transitionContext.initialFrame(for: fromVC)
         fromRect.origin.y = fromRect.size.height - initialY
         
         let imageView = fakeMiniView()
         imageView.alpha = 0
         fromVC.view.addSubview(imageView)
         
-        let container = transitionContext.containerView()
-        container?.addSubview(toVC.view)
-        container?.addSubview(fromVC.view)
+        let container = transitionContext.containerView
+        container.addSubview(toVC.view)
+        container.addSubview(fromVC.view)
         
-        let animOptions: UIViewAnimationOptions = transitionContext.isInteractive() ? [UIViewAnimationOptions.CurveLinear] : []
+        let animOptions: UIViewAnimationOptions = transitionContext.isInteractive ? [UIViewAnimationOptions.curveLinear] : []
         
-        UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0, options: animOptions, animations: {
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, options: animOptions, animations: {
             fromVC.view.frame = fromRect
             imageView.alpha = 1
         }) { (finished) in
             imageView.removeFromSuperview()
-            if transitionContext.transitionWasCancelled() {
+            if transitionContext.transitionWasCancelled {
                 transitionContext.completeTransition(false)
             } else {
                 transitionContext.completeTransition(true)
@@ -69,16 +74,16 @@ class MiniToLargeViewAnimator: BaseAnimator {
         }
     }
     
-    override func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
-        return transitionContext!.isInteractive() ? 0.4 : 0.3
+    override func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return transitionContext!.isInteractive ? 0.4 : 0.3
     }
     
+    //MARK: - Helper
     func fakeMiniView() -> UIView {
         // Fake a mini view, two ways:
         // 1. create a new certain one
         // 2. snapshot old one.
         
-        return BottomBar(frame: CGRect(x: 0, y: 0, width: UIScreen.mainScreen().bounds.size.width, height: BottomBar.bottomBarHeight))
+        return BottomBar(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: BottomBar.bottomBarHeight))
     }
-    
 }
