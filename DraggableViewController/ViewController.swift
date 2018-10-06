@@ -31,8 +31,14 @@ class ViewController: UIViewController {
         bottomBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(bottomBar)
         
-        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[bottomBar]-0-|", options: [], metrics: nil, views: ["bottomBar": bottomBar]))
-        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[bottomBar(\(BottomBar.bottomBarHeight))]-0-|", options: [], metrics: nil, views: ["bottomBar": bottomBar]))
+        [bottomBar.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 0),
+         bottomBar.rightAnchor.constraint(equalTo: view.rightAnchor, constant: 0),
+         bottomBar.heightAnchor.constraint(equalToConstant: 50)].forEach({ $0.isActive = true })
+        if #available(iOS 11.0, *) {
+            bottomBar.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
+        } else {
+            bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
+        }
         
         nextViewController = NextViewController()
         nextViewController.rootViewController = self
@@ -59,14 +65,22 @@ extension ViewController: UIViewControllerTransitioningDelegate {
     
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         let animator = MiniToLargeViewAnimator()
-        animator.initialY = BottomBar.bottomBarHeight
+        if #available(iOS 11.0, *) {
+            animator.initialY = BottomBar.bottomBarHeight + self.view.safeAreaInsets.bottom
+        } else {
+            animator.initialY = BottomBar.bottomBarHeight
+        }
         animator.transitionType = .Present
         return animator
     }
     
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         let animator = MiniToLargeViewAnimator()
-        animator.initialY = BottomBar.bottomBarHeight
+        if #available(iOS 11.0, *) {
+            animator.initialY = BottomBar.bottomBarHeight + self.view.safeAreaInsets.bottom
+        } else {
+            animator.initialY = BottomBar.bottomBarHeight
+        }
         animator.transitionType = .Dismiss
         return animator
     }

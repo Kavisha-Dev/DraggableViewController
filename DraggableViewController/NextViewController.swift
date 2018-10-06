@@ -24,8 +24,13 @@ class NextViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(button)
         
-        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-6-[button]", options: [], metrics: nil, views: ["button": button]))
-        self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-20-[button]", options: [], metrics: nil, views: ["button": button]))
+        button.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 6).isActive = true
+        if #available(iOS 11.0, *) {
+            button.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0).isActive = true
+        } else {
+            button.topAnchor.constraint(equalTo: view.topAnchor, constant: 20).isActive = true
+        }
+
     }
     
     //MARK: - Actions

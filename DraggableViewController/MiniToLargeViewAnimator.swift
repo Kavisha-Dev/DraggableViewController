@@ -29,7 +29,7 @@ class MiniToLargeViewAnimator: BaseAnimator {
         container.addSubview(fromVC.view)
         container.addSubview(toVC.view)
         
-        let animOptions: UIViewAnimationOptions = transitionContext.isInteractive ? [UIViewAnimationOptions.curveLinear] : []
+        let animOptions: UIView.AnimationOptions = transitionContext.isInteractive ? [UIView.AnimationOptions.curveLinear] : []
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, options: animOptions, animations: {
             toVC.view.frame = fromRect
@@ -59,7 +59,7 @@ class MiniToLargeViewAnimator: BaseAnimator {
         container.addSubview(toVC.view)
         container.addSubview(fromVC.view)
         
-        let animOptions: UIViewAnimationOptions = transitionContext.isInteractive ? [UIViewAnimationOptions.curveLinear] : []
+        let animOptions: UIView.AnimationOptions = transitionContext.isInteractive ? [UIView.AnimationOptions.curveLinear] : []
         
         UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0, options: animOptions, animations: {
             fromVC.view.frame = fromRect
